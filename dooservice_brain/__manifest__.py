@@ -3,7 +3,7 @@
     "summary": "Ask how your company works in Odoo, and request new views",
     "description": "Chat with Dooservice in Discuss: it answers from the processes your consultants reviewed, "
     "and turns what you want to see into a request they build and approve.",
-    "version": "19.0.1.0.0",
+    "version": "20.0.1.0.0",
     "category": "Productivity/Discuss",
     "license": "LGPL-3",
     "author": "Dooservice",
@@ -11,8 +11,7 @@
     "depends": ["mail"],
     "data": [
         "security/groups.xml",
-        "security/ir.model.access.csv",
-        "security/rules.xml",
+        "security/ir.access.csv",
         "data/partner.xml",
         "data/crons.xml",
         "views/request_views.xml",
