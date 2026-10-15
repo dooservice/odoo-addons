@@ -9,8 +9,8 @@ from odoo import api, fields, models
 from odoo.exceptions import UserError
 
 from ..services.client import AssistantClient, AssistantError
+from ..services.request_states import KINDS, STATES, StateFollowing
 from ..services.wording import Wording
-from .request_states import KINDS, STATES, StateFollowing
 
 
 class BrainRequest(models.Model):
@@ -31,6 +31,7 @@ class BrainRequest(models.Model):
     screen_model = fields.Char(readonly=True)
     review_comment = fields.Text(string="Consultant's comment", readonly=True)
     requested_by = fields.Many2one("res.users", default=lambda self: self.env.user, required=True, readonly=True)
+    message_id = fields.Many2one("mail.message", readonly=True, ondelete="set null", help="The chat piece it was sent from.")
 
     def refused(self, error):
         raise UserError(Wording.refusal(error.code, self.env.user.lang or ""))

@@ -16,8 +16,16 @@ a chat with **Dooservice** in Discuss.
   in the project's repository, reviews it and approves it; it arrives with the next
   deploy. Each change of state is written in the request's chatter.
 
-Every answer says which model wrote it and on whose AI account. Questions and answers
-stay in this database.
+- **Answers with buttons**: under its text an answer can carry options to pick, a value to
+  type, a request ready to send or correct, the diagram of the process it stands on, a
+  short table, or a chart counted by this Odoo with your own access (the platform names
+  the model and the field, never sees the figures). Nothing is created, sent or changed
+  without pressing a button that says so, and a button does its thing once. Someone who
+  may only ask leaves a request with an administrator. Each answer can be rated 👍/👎.
+  In Odoo 16 the buttons are signed links in the answer itself.
+
+The first answer of a chat says which model writes them and on whose AI account.
+Questions and answers stay in this database.
 
 ## Dooservice Connect
 

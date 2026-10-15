@@ -68,6 +68,9 @@ class AssistantClient:
         }
         return self.call("POST", "/requests", body)
 
+    def feedback(self, question, rating, name):
+        return self.call("POST", "/feedback", {"question": question, "rating": rating, "user_name": name})
+
     def submit(self, remote_id):
         return self.call("POST", f"/requests/{remote_id}/submit")
 
