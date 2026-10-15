@@ -149,8 +149,8 @@ msgstr "Asistente Dooservice: responder preguntas"
 
 #. module: dooservice_brain
 #: model:res.groups,name:dooservice_brain.group_ask
-msgid "Dooservice Assistant: ask"
-msgstr "Asistente Dooservice: preguntar"
+msgid "Ask"
+msgstr "Preguntar"
 
 #. module: dooservice_brain
 #: model:ir.actions.server,name:dooservice_brain.cron_follow_requests_ir_actions_server
@@ -159,8 +159,8 @@ msgstr "Asistente Dooservice: seguir solicitudes"
 
 #. module: dooservice_brain
 #: model:res.groups,name:dooservice_brain.group_request
-msgid "Dooservice Assistant: request changes"
-msgstr "Asistente Dooservice: pedir cambios"
+msgid "Request changes"
+msgstr "Pedir cambios"
 
 #. module: dooservice_brain
 #: model:ir.model.fields,field_description:dooservice_brain.field_dooservice_brain_question__error
@@ -547,3 +547,8 @@ msgstr "Paso a módulo"
 #: model_terms:ir.ui.view,arch_db:dooservice_brain.view_request_form
 msgid "Your consultant reads its code before approving it: it changes what Odoo does on its own."
 msgstr "Tu consultora lee su código antes de aprobarla: cambia lo que Odoo hace por su cuenta."
+
+#. module: dooservice_brain
+#: model:ir.module.category,name:dooservice_brain.category_assistant
+msgid "Dooservice Assistant"
+msgstr "Asistente Dooservice"
