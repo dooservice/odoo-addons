@@ -10,6 +10,6 @@ USED_FOLDER = "dooservice_connect"
 USED_KEPT_SECONDS = 10 * 60
 #: Where a signed-in person lands.
 LANDING = "/odoo"
-#: What a person reads when a link does not sign them in; the reason stays in the log.
-REFUSED = "This link from the Dooservice panel does not work any more. Ask for a new one."
-NOT_READY = "Dooservice Connect is not set up on this Odoo yet: it will be after its next restart."
+#: Where a link that cannot sign anybody in sends them: Odoo's own login, never a dead end.
+#: Why it did not is only in the log.
+SIGN_IN = "/web/login"
