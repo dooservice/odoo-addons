@@ -3,7 +3,7 @@
     "summary": "Ask how your company works in Odoo, and request new views",
     "description": "Chat with Dooservice in Discuss: it answers from the processes your consultants reviewed, "
     "and turns what you want to see into a request they build and approve.",
-    "version": "20.0.1.0.0",
+    "version": "20.0.1.1.0",
     "category": "Productivity/Discuss",
     "license": "LGPL-3",
     "author": "Dooservice",
