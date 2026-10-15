@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd "pg_isready -U odoo" --health-interval 5s --health-timeout 5s --health-retries 10
+    container:
+      # The branch is the Odoo version; the image is the one the platform runs.
+      image: ghcr.io/dooservice/dooservice-odoo:${{ github.base_ref || github.ref_name }}
+      options: --user root
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install and test dooservice_brain
+        run: >-
+          odoo --db_host postgres --db_user odoo --db_password odoo -d test
+          --addons-path=/usr/lib/python3/dist-packages/odoo/addons,$GITHUB_WORKSPACE
+          -i dooservice_brain --test-tags /dooservice_brain --stop-after-init --log-level=test
+          2>&1 | tee test.log;
+          grep -q " 0 failed, 0 error(s)" test.log

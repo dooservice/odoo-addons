@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_request_own" model="ir.rule">
+        <field name="name">Dooservice requests: one's own</field>
+        <field name="model_id" ref="model_dooservice_brain_request"/>
+        <field name="domain_force">[('requested_by', '=', user.id)]</field>
+        <field name="groups" eval="[Command.link(ref('group_request'))]"/>
+    </record>
+    <record id="rule_request_system" model="ir.rule">
+        <field name="name">Dooservice requests: every one, for administrators</field>
+        <field name="model_id" ref="model_dooservice_brain_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[Command.link(ref('base.group_system'))]"/>
+    </record>
+    <record id="rule_question_own" model="ir.rule">
+        <field name="name">Dooservice questions: one's own</field>
+        <field name="model_id" ref="model_dooservice_brain_question"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[Command.link(ref('group_ask'))]"/>
+    </record>
+</odoo>

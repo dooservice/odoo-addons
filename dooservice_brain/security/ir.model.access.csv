@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_question_ask,dooservice.brain.question ask,model_dooservice_brain_question,group_ask,1,0,0,0
+access_request_request,dooservice.brain.request request,model_dooservice_brain_request,group_request,1,1,1,0
+access_request_system,dooservice.brain.request system,model_dooservice_brain_request,base.group_system,1,1,1,1

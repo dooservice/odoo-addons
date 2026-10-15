@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="partner_dooservice" model="res.partner">
+        <field name="name">Dooservice</field>
+        <field name="active" eval="True"/>
+        <field name="image_1920" type="base64" file="dooservice_brain/static/description/icon.png"/>
+    </record>
+    <record id="user_dooservice" model="res.users">
+        <field name="login">dooservice-assistant</field>
+        <field name="partner_id" ref="partner_dooservice"/>
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

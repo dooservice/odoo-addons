@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_request_form" model="ir.ui.view">
+        <field name="name">dooservice.brain.request.form</field>
+        <field name="model">dooservice.brain.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_understand" type="object" string="Read it back" class="btn-primary" invisible="state != 'new'"/>
+                    <button name="action_understand" type="object" string="Read it back again" invisible="state != 'draft'"/>
+                    <button name="action_submit" type="object" string="Send" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('building', 'deployed', 'rejected', 'cancelled', 'approved')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,draft,queued,ready,approved,deployed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Read it back to get a title"/></h1>
+                    </div>
+                    <group>
+                        <field name="text" readonly="state != 'new'"/>
+                        <field name="summary" invisible="not summary"/>
+                    </group>
+                    <group invisible="state == 'new'">
+                        <group>
+                            <field name="kind"/>
+                            <field name="model_name"/>
+                            <field name="rows"/>
+                        </group>
+                        <group>
+                            <field name="number"/>
+                            <field name="requested_by"/>
+                            <field name="review_comment" invisible="not review_comment"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_request_list" model="ir.ui.view">
+        <field name="name">dooservice.brain.request.list</field>
+        <field name="model">dooservice.brain.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="number"/>
+                <field name="name"/>
+                <field name="kind"/>
+                <field name="requested_by"/>
+                <field name="state" widget="badge" decoration-success="state == 'deployed'" decoration-info="state in ('queued', 'building', 'ready')" decoration-warning="state == 'out_of_scope'" decoration-danger="state in ('rejected', 'failed')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_request_kanban" model="ir.ui.view">
+        <field name="name">dooservice.brain.request.kanban</field>
+        <field name="model">dooservice.brain.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" group_create="false" quick_create="false">
+                <templates>
+                    <t t-name="card">
+                        <field name="name" class="fw-bold"/>
+                        <field name="model_name"/>
+                        <field name="requested_by"/>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_requests" model="ir.actions.act_window">
+        <field name="name">Requests</field>
+        <field name="res_model">dooservice.brain.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ask for something you want to see</p>
+            <p>Describe a list, a board or a report in your own words. Your consultant builds and approves it.</p>
+        </field>
+    </record>
+</odoo>

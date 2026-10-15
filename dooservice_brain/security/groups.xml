@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_ask" model="res.groups">
+        <field name="name">Dooservice Assistant: ask</field>
+        <field name="comment">Chat with Dooservice about how the company works in Odoo.</field>
+    </record>
+    <record id="group_request" model="res.groups">
+        <field name="name">Dooservice Assistant: request changes</field>
+        <field name="comment">Also request new views, boards and reports, and follow them.</field>
+        <field name="implied_ids" eval="[Command.link(ref('group_ask'))]"/>
+    </record>
+</odoo>
