@@ -4,7 +4,7 @@ from odoo import _
 
 from ..services.client import AssistantClient, AssistantError
 
-KINDS = [("view", "View"), ("automate", "Automation"), ("build", "Development")]
+KINDS = [("view", "View"), ("automate", "Automation"), ("build", "Development"), ("adopt", "Taken into a module")]
 STATES = [
     ("new", "New"),
     ("draft", "To send"),

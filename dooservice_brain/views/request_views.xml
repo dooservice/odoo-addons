@@ -13,6 +13,9 @@
                     <field name="state" widget="statusbar" statusbar_visible="new,draft,queued,ready,approved,deployed"/>
                 </header>
                 <sheet>
+                    <div class="alert alert-info" role="status" attrs="{'invisible': [('kind', 'not in', ('automate', 'adopt'))]}">
+                        Your consultant reads its code before approving it: it changes what Odoo does on its own.
+                    </div>
                     <div class="oe_title">
                         <h1><field name="name" placeholder="Read it back to get a title"/></h1>
                     </div>
