@@ -2,7 +2,7 @@ from odoo import models
 
 
 class DiscussChannel(models.Model):
-    _inherit = "discuss.channel"
+    _inherit = "mail.channel"
 
     def _message_post_after_hook(self, message, msg_vals):
         self.env["dooservice.brain.question"]._receive(self, message)

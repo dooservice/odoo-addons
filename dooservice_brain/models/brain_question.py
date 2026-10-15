@@ -4,7 +4,7 @@ Posting returns at once; the task is triggered to run now and posts the answer a
 Dooservice in the same chat. The question and its answer stay in this database only.
 """
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 from odoo.tools import html2plaintext
 
 from ..constants import ANSWER_CRON, BOT_PARTNER, GROUP_ASK, QUESTION_MAX_CHARACTERS, QUESTIONS_PER_RUN
@@ -16,7 +16,7 @@ class BrainQuestion(models.Model):
     _description = "Question to the Dooservice assistant"
     _order = "id desc"
 
-    channel_id = fields.Many2one("discuss.channel", required=True, ondelete="cascade", index=True)
+    channel_id = fields.Many2one("mail.channel", required=True, ondelete="cascade", index=True)
     message_id = fields.Many2one("mail.message", ondelete="set null")
     user_id = fields.Many2one("res.users", required=True, ondelete="cascade", index=True)
     text = fields.Text(required=True)
@@ -42,7 +42,7 @@ class BrainQuestion(models.Model):
         if not user or not text:
             return
         if not user.has_group(GROUP_ASK):
-            Answering(self.env).post(channel, self.env._("You do not have access to the assistant. Ask your administrator."))
+            Answering(self.env).post(channel, _("You do not have access to the assistant. Ask your administrator."))
             return
         self.sudo().create(
             {

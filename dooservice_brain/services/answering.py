@@ -15,13 +15,13 @@ class Answering:
 
     def post(self, channel, body):
         channel.sudo().message_post(
-            author_id=self.bot.id, body=body, message_type="comment", silent=True, subtype_xmlid="mail.mt_comment"
+            author_id=self.bot.id, body=body, message_type="comment", subtype_xmlid="mail.mt_comment"
         )
 
     def history(self, question):
         earlier = self.env["mail.message"].sudo().search(
             [
-                ("model", "=", "discuss.channel"),
+                ("model", "=", "mail.channel"),
                 ("res_id", "=", question.channel_id.id),
                 ("message_type", "=", "comment"),
                 ("id", "<", question.message_id.id or 0),

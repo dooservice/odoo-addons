@@ -50,7 +50,7 @@ class TestChat(TransactionCase):
         return question
 
     def last_said(self, channel):
-        return self.env["mail.message"].search([("model", "=", "discuss.channel"), ("res_id", "=", channel.id)], limit=1)
+        return self.env["mail.message"].search([("model", "=", "mail.channel"), ("res_id", "=", channel.id)], limit=1)
 
     def test_the_answer_cites_its_steps_and_who_answered(self):
         channel = self.say(self.ana, "How is an order confirmed?")
