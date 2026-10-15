@@ -30,12 +30,14 @@ dooservice_assistant_key = dsa_...
 dooservice_assistant_url = https://api.dooservice.sh/api/v2
 ```
 
-Then install **Dooservice Assistant** from Apps, and give people one of its groups:
+Then install **Dooservice Assistant** from Apps. The administrator gets **Request changes**
+on install; give everybody else one of its two levels in their user form, under
+**Dooservice Assistant**:
 
-| Group | What it allows |
+| Level | What it allows |
 |---|---|
-| Dooservice Assistant: ask | chat with Dooservice |
-| Dooservice Assistant: request changes | also send requests and follow them under **Dooservice › Requests** |
+| Ask | chat with Dooservice from the lightbulb in the top bar |
+| Request changes | also send requests and follow them under **Dooservice › Requests** |
 
 ## Tests
 
