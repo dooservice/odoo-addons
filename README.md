@@ -1,4 +1,9 @@
-# Dooservice Assistant for Odoo, 16.0 to 20.0
+# Dooservice modules for Odoo, 16.0 to 20.0
+
+Two modules: `dooservice_brain`, the assistant, and `dooservice_connect`, signing in from
+the Dooservice panel.
+
+## Dooservice Assistant
 
 `dooservice_brain` puts the project's brain where the people who use Odoo already are:
 a chat with **Dooservice** in Discuss.
@@ -13,6 +18,22 @@ a chat with **Dooservice** in Discuss.
 
 Every answer says which model wrote it and on whose AI account. Questions and answers
 stay in this database.
+
+## Dooservice Connect
+
+`dooservice_connect` signs a person in from **Connect** in the panel, as the Odoo user whose
+login or email is theirs. The panel signs a link for that person, for the address it
+opens, valid once and for a minute; this Odoo checks it with the platform's public key.
+
+It is a server-wide module, loaded from `odoo.conf` and never installed: a database taken
+elsewhere carries nothing of it, and the links already used are remembered beside the
+filestore, not in the database. The platform writes:
+
+```ini
+[options]
+server_wide_modules = base,web,dooservice_connect
+dooservice_connect_key = <the platform's public key, base64>
+```
 
 ## Branches
 
