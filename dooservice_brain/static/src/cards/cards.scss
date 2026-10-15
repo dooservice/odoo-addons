@@ -1,0 +1,24 @@
+.o-dooservice-cards {
+    max-width: 32rem;
+
+    .o-dooservice-card {
+        border: 1px solid $border-color;
+        border-radius: $border-radius;
+        padding: map-get($spacers, 2);
+    }
+
+    .o-dooservice-steps span {
+        height: 0.3rem;
+    }
+
+    .o-dooservice-dot {
+        display: inline-block;
+        width: 0.6rem;
+        height: 0.6rem;
+        border-radius: 50%;
+    }
+}
+
+.o-mail-ChatWindow .o-dooservice-buttons {
+    flex-direction: column;
+}

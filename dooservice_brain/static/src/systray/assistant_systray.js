@@ -1,17 +1,17 @@
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component, onWillStart, proxy, useProps } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { user } from "@web/core/user";
 import { useService } from "@web/core/utils/hooks";
 
 export class AssistantSystray extends Component {
     static template = "dooservice_brain.AssistantSystray";
-    static props = {};
 
     setup() {
+        this.props = useProps();
         this.orm = useService("orm");
         this.action = useService("action");
         this.store = useService("mail.store");
-        this.state = useState({ allowed: false });
+        this.state = proxy({ allowed: false });
         onWillStart(async () => {
             this.state.allowed = await user.hasGroup("dooservice_brain.group_ask");
         });

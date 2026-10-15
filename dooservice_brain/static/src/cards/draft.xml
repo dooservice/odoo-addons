@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="dooservice_brain.Draft">
+        <t t-set="request" t-value="this.request(card)"/>
+        <div class="o-dooservice-card o-dooservice-draft">
+            <div class="d-flex flex-wrap align-items-center gap-1 mb-1">
+                <span class="fw-bold flex-grow-1" t-out="card.title or card.text"/>
+                <t t-if="!done.done">
+                    <t t-if="!card.unavailable">
+                        <button t-if="this.state.payload.can_request" class="btn btn-sm btn-primary" t-att-disabled="this.state.busy" t-on-click="() => this.act(card, 'send')">Send</button>
+                        <button t-else="" class="btn btn-sm btn-primary" t-att-disabled="this.state.busy" title="You may only ask: an administrator reads it and sends it." t-on-click="() => this.act(card, 'send')">Ask an administrator</button>
+                        <button class="btn btn-sm btn-light" t-att-disabled="this.state.busy" t-on-click="() => this.state.correcting[card.id] = !this.state.correcting[card.id]">Correct</button>
+                    </t>
+                    <button class="btn btn-sm btn-light" t-att-disabled="this.state.busy" title="Nothing is created." t-on-click="() => this.act(card, 'cancel')">Cancel</button>
+                </t>
+                <button t-elif="request and ['draft', 'queued'].includes(request.state)" class="btn btn-sm btn-light" t-att-disabled="this.state.busy" title="The request stops here." t-on-click="() => this.act(card, 'cancel_request')">Cancel request</button>
+            </div>
+            <div t-if="card.unavailable" class="small text-muted">It could not be read back now; nothing was sent.</div>
+            <t t-else="">
+                <div class="small" t-out="card.summary or card.text"/>
+                <div t-if="card.model" class="small text-muted">
+                    <t t-out="card.model"/><t t-if="card.rows"> · ~<t t-out="card.rows"/></t>
+                </div>
+            </t>
+            <div t-if="this.state.correcting[card.id] and !done.done" class="d-flex flex-column gap-1 mt-1">
+                <textarea class="form-control form-control-sm" rows="2" t-att-value="this.state.typed[card.id] or ''" t-on-input="(ev) => this.state.typed[card.id] = ev.target.value" placeholder="What should change?"/>
+                <div><button class="btn btn-sm btn-primary" t-att-disabled="!this.state.typed[card.id] or this.state.busy" t-on-click="() => this.act(card, 'correct', this.state.typed[card.id])">Read again</button></div>
+            </div>
+            <div t-if="done.done === 'cancel'" class="small text-muted mt-1">Cancelled: nothing was created.</div>
+            <div t-if="done.done === 'asked' and request and request.state === 'draft'" class="small text-muted mt-1">Asked of an administrator.</div>
+            <div t-if="request and request.state !== 'draft'" class="mt-2">
+                <div class="small mb-1"><t t-if="request.number">#<t t-out="request.number"/> · </t><t t-out="request.label"/></div>
+                <div class="o-dooservice-steps d-flex gap-1">
+                    <span t-foreach="this.steps" t-as="step" t-key="step" class="flex-grow-1 rounded" t-att-class="this.reached(card, step) ? 'bg-primary' : 'bg-200'"/>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

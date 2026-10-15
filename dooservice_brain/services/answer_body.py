@@ -1,26 +1,15 @@
-"""An answer as it is posted in the chat: the text, the steps it stands on, and who answered."""
+"""An answer as it is posted in the chat: its text, and the line saying who answered."""
 
-from markupsafe import Markup, escape
+from markupsafe import escape
 
 
 class AnswerBody:
     def __init__(self, env):
         self.env = env
 
-    def render(self, result, status, request_url=""):
-        parts = [escape(result.get("answer") or "")]
-        sources = result.get("sources") or []
-        if sources:
-            cited = ", ".join(
-                self.env._("%(process)s · step %(step)s", process=source.get("name"), step=source.get("step"))
-                for source in sources
-            )
-            parts.append(Markup("<br/><small>%s %s</small>") % (self.env._("Sources:"), cited))
-        if request_url:
-            link = Markup('<a href="%s">%s</a>') % (request_url, self.env._("Request it"))
-            parts.append(Markup("<br/>%s %s") % (self.env._("This does not exist yet."), link))
-        parts.append(Markup("<br/><small class='text-muted'>%s</small>") % self.footer(status))
-        return Markup("").join(parts)
+    def render(self, result):
+        """The text alone: its sources, the model and what it proposes go in its pieces."""
+        return escape(result.get("answer") or "")
 
     def footer(self, status):
         if not status.get("model_label"):

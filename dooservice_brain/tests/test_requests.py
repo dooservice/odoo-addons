@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from odoo.tests import TransactionCase, new_test_user, tagged
 
-from odoo.addons.dooservice_brain.models.request_states import StateFollowing
+from odoo.addons.dooservice_brain.services.request_states import StateFollowing
 
 from .platform import FakePlatform
 
