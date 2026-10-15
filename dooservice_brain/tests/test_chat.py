@@ -60,8 +60,10 @@ class TestChat(TransactionCase):
 
         said = self.last_said(channel)
         self.assertEqual(said.author_id, self.bot)
-        self.assertIn("Quote to cash · step 2", said.body)
-        self.assertIn("Claude Haiku 5.5", said.body)
+        cards = {card["type"]: card for card in said.dooservice_cards}
+        self.assertEqual(cards["sources"]["items"], ["Quote to cash · step 2"])
+        self.assertIn("Claude Haiku 5.5", cards["meta"]["text"])
+        self.assertNotIn("Quote to cash", said.body)
         self.assertEqual(question.state, "answered")
         self.assertEqual(platform.asked[0][1][:2], ("How is an order confirmed?", "sale.order"))
 
@@ -72,6 +74,17 @@ class TestChat(TransactionCase):
 
         self.assertFalse(self.env["dooservice.brain.question"].search([]))
         self.assertIn("do not have access", self.last_said(channel).body)
+
+    def test_who_answered_is_said_only_under_the_first_answer(self):
+        channel = self.say(self.ana, "How is an order confirmed?")
+        self.answered(FakePlatform({"ask": ANSWERED}))
+        channel.with_user(self.ana).message_post(body="And then?", message_type="comment", subtype_xmlid="mail.mt_comment")
+        second = self.env["dooservice.brain.question"].search([("state", "=", "pending")], limit=1)
+
+        Answering(self.env, FakePlatform({"ask": ANSWERED})).answer(second)
+
+        kinds = [card["type"] for card in self.last_said(channel).dooservice_cards]
+        self.assertNotIn("meta", kinds)
 
     def test_with_nothing_reviewed_it_does_not_guess(self):
         channel = self.say(self.ana, "Who approves discounts?")

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="dooservice_brain.Chart">
+        <div class="o-dooservice-card">
+            <div t-if="this.props.card.title" class="fw-bold mb-1" t-out="this.props.card.title"/>
+            <div t-if="!this.state.loaded" class="small text-muted">Counting…</div>
+            <div t-elif="this.state.denied === 'access'" class="small text-muted">You cannot see these records.</div>
+            <div t-elif="this.state.denied or !this.state.groups.length" class="small text-muted">Nothing to count.</div>
+            <t t-elif="this.props.card.kind === 'pie'">
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <svg viewBox="0 0 140 140" width="140" height="140">
+                        <circle t-if="this.slices.length === 1" cx="70" cy="70" r="60" t-att-fill="this.slices[0].color"/>
+                        <path t-else="" t-foreach="this.slices" t-as="slice" t-key="slice_index" t-att-d="slice.path" t-att-fill="slice.color"><title t-out="slice.label + ': ' + slice.count"/></path>
+                    </svg>
+                    <div class="small">
+                        <div t-foreach="this.slices" t-as="slice" t-key="slice_index"><span class="o-dooservice-dot" t-att-style="'background:' + slice.color"/> <t t-out="slice.label"/> · <t t-out="slice.count"/></div>
+                    </div>
+                </div>
+            </t>
+            <t t-else="">
+                <svg t-att-viewBox="'0 0 ' + this.width + ' ' + this.height" class="w-100" t-att-height="this.height">
+                    <polyline t-if="this.props.card.kind === 'line'" t-att-points="this.points" fill="none" stroke="#714b67" stroke-width="2"/>
+                    <t t-else=""><rect t-foreach="this.bars" t-as="bar" t-key="bar_index" t-att-x="bar.x" t-att-y="bar.y" t-att-width="bar.width" t-att-height="bar.height" t-att-fill="bar.color" rx="2"><title t-out="bar.label + ': ' + bar.count"/></rect></t>
+                </svg>
+                <div class="d-flex small text-muted">
+                    <span t-foreach="this.bars" t-as="bar" t-key="bar_index" class="flex-grow-1 text-truncate text-center" t-att-title="bar.label + ': ' + bar.count" t-out="bar.label"/>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

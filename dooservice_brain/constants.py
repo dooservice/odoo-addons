@@ -23,3 +23,30 @@ BOT_PARTNER = "dooservice_brain.partner_dooservice"
 GROUP_ASK = "dooservice_brain.group_ask"
 GROUP_REQUEST = "dooservice_brain.group_request"
 ANSWER_CRON = "dooservice_brain.cron_answer_questions"
+
+#: The pieces the module adds to an answer besides the ones the platform sends.
+SOURCES_CARD = "sources"
+META_CARD = "meta"
+FEEDBACK_CARD = "feedback"
+ERROR_CARD = "error"
+DRAFT_CARD = "draft"
+CHOICE_CARDS = ("choice", "multi", "field")
+#: What a person may do with a piece, by its type.
+CARD_ACTIONS = {
+    "choice": ("choose",),
+    "multi": ("choose",),
+    "field": ("choose",),
+    "draft": ("send", "cancel", "correct", "cancel_request"),
+    "feedback": ("rate",),
+    "error": ("retry",),
+}
+#: The ratings a person gives an answer.
+RATINGS = ("up", "down")
+#: The group of the administrators, who see every request and send the ones asked of them.
+GROUP_SYSTEM = "base.group_system"
+#: How many groups a chart in the chat draws, the largest first.
+CHART_GROUPS_MAX = 12
+#: Requests in these states change no more: their piece stops asking for news.
+FINISHED_REQUEST_STATES = ("deployed", "rejected", "cancelled", "failed")
+#: The refusals worth trying again a minute later: the platform or the model was away.
+RETRIABLE = ("assistant_unreachable", "assistant_not_ready")
