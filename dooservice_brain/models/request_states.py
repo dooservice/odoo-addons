@@ -1,5 +1,7 @@
 """The states and kinds of a request, as the platform names them, and following them from it."""
 
+from odoo import _
+
 from ..services.client import AssistantClient, AssistantError
 
 KINDS = [("view", "View"), ("automate", "Automation"), ("build", "Development")]
@@ -53,7 +55,7 @@ class StateFollowing:
             if found and found.get("state") != request.state:
                 request.write(self.values_of(found))
                 request.message_post(
-                    body=self.env._("This request is now: %(state)s", state=dict(STATES)[request.state]),
+                    body=_("This request is now: %(state)s", state=dict(STATES)[request.state]),
                     partner_ids=request.requested_by.partner_id.ids,
                     subtype_xmlid="mail.mt_comment",
                 )

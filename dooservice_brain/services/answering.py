@@ -15,7 +15,7 @@ class Answering:
 
     def post(self, channel, body):
         channel.sudo().message_post(
-            author_id=self.bot.id, body=body, message_type="comment", silent=True, subtype_xmlid="mail.mt_comment"
+            author_id=self.bot.id, body=body, message_type="comment", subtype_xmlid="mail.mt_comment"
         )
 
     def history(self, question):

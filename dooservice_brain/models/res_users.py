@@ -23,4 +23,4 @@ class ResUsers(models.Model):
     @api.model
     def _dooservice_brain_chat(self):
         """This person's chat with Dooservice, made the first time."""
-        return self.env["discuss.channel"]._get_or_create_chat([self.env.ref(BOT_PARTNER).id])
+        return self.env["discuss.channel"].channel_get([self.env.ref(BOT_PARTNER).id])

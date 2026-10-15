@@ -2,6 +2,8 @@
 
 from markupsafe import Markup, escape
 
+from odoo import _
+
 
 class AnswerBody:
     def __init__(self, env):
@@ -12,27 +14,27 @@ class AnswerBody:
         sources = result.get("sources") or []
         if sources:
             cited = ", ".join(
-                self.env._("%(process)s · step %(step)s", process=source.get("name"), step=source.get("step"))
+                _("%(process)s · step %(step)s", process=source.get("name"), step=source.get("step"))
                 for source in sources
             )
-            parts.append(Markup("<br/><small>%s %s</small>") % (self.env._("Sources:"), cited))
+            parts.append(Markup("<br/><small>%s %s</small>") % (_("Sources:"), cited))
         if request_url:
-            link = Markup('<a href="%s">%s</a>') % (request_url, self.env._("Request it"))
-            parts.append(Markup("<br/>%s %s") % (self.env._("This does not exist yet."), link))
+            link = Markup('<a href="%s">%s</a>') % (request_url, _("Request it"))
+            parts.append(Markup("<br/>%s %s") % (_("This does not exist yet."), link))
         parts.append(Markup("<br/><small class='text-muted'>%s</small>") % self.footer(status))
         return Markup("").join(parts)
 
     def footer(self, status):
         if not status.get("model_label"):
-            return self.env._("No record of this Odoo is sent.")
+            return _("No record of this Odoo is sent.")
         owner = (
-            self.env._("this project's own account")
+            _("this project's own account")
             if status.get("account_scope") == "project"
-            else self.env._("the account of %(name)s", name=status.get("organization_name") or "")
+            else _("the account of %(name)s", name=status.get("organization_name") or "")
         )
-        return self.env._(
+        return _(
             "%(model)s · %(owner)s. No record of this Odoo is sent.", model=status["model_label"], owner=owner
         )
 
     def unreviewed(self):
-        return self.env._("Nobody has reviewed how this works yet, so I would rather not guess.")
+        return _("Nobody has reviewed how this works yet, so I would rather not guess.")

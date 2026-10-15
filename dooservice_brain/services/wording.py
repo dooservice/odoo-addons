@@ -1,8 +1,7 @@
 """What the assistant tells a person when the platform could not answer, in their language."""
 
-from odoo.tools.translate import LazyTranslate
-
-_lt = LazyTranslate("dooservice_brain")
+from odoo import _lt
+from odoo.tools.translate import code_translations
 
 
 class Wording:
@@ -21,4 +20,6 @@ class Wording:
 
     @classmethod
     def refusal(cls, code, lang=""):
-        return cls.refusals.get(code, cls.fallback)._translate(lang)
+        source = cls.refusals.get(code, cls.fallback)._source
+        translated = code_translations.get_python_translations("dooservice_brain", lang or "en_US")
+        return translated.get(source, source)
