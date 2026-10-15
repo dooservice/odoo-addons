@@ -19,7 +19,7 @@ msgstr "%(model)s · %(owner)s. No se envía ningún registro de este Odoo."
 
 #. module: dooservice_brain
 #. odoo-python
-#: code:addons/dooservice_brain/services/answer_body.py:0
+#: code:addons/dooservice_brain/services/answer_cards.py:0
 msgid "%(process)s · step %(step)s"
 msgstr "%(process)s · paso %(step)s"
 
@@ -69,7 +69,11 @@ msgid "Being built"
 msgstr "En construcción"
 
 #. module: dooservice_brain
+#. odoo-javascript
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:dooservice_brain.view_request_form
+#: code:addons/dooservice_brain/services/cards_html.py:0
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -341,12 +345,6 @@ msgid "Remote"
 msgstr "Remota"
 
 #. module: dooservice_brain
-#. odoo-python
-#: code:addons/dooservice_brain/services/answer_body.py:0
-msgid "Request it"
-msgstr "Pedirlo"
-
-#. module: dooservice_brain
 #: model:ir.model,name:dooservice_brain.model_dooservice_brain_request
 msgid "Request to the Dooservice assistant"
 msgstr "Solicitud al asistente Dooservice"
@@ -380,15 +378,14 @@ msgid "Screen asked from"
 msgstr "Pantalla desde la que se preguntó"
 
 #. module: dooservice_brain
+#. odoo-javascript
+#. odoo-python
 #: model_terms:ir.ui.view,arch_db:dooservice_brain.view_request_form
+#: code:addons/dooservice_brain/services/cards_html.py:0
+#: code:addons/dooservice_brain/static/src/cards/cards.xml:0
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
 msgid "Send"
 msgstr "Enviar"
-
-#. module: dooservice_brain
-#. odoo-python
-#: code:addons/dooservice_brain/services/answer_body.py:0
-msgid "Sources:"
-msgstr "Fuentes:"
 
 #. module: dooservice_brain
 #: model:ir.model.fields,field_description:dooservice_brain.field_dooservice_brain_question__state
@@ -453,12 +450,6 @@ msgstr "El modelo de la pantalla desde la que esta persona abrió el asistente p
 msgid ""
 "The server of this Odoo needs an update before the assistant can answer."
 msgstr "El servidor de este Odoo necesita una actualización antes de que el asistente pueda responder."
-
-#. module: dooservice_brain
-#. odoo-python
-#: code:addons/dooservice_brain/services/answer_body.py:0
-msgid "This does not exist yet."
-msgstr "Esto todavía no existe."
 
 #. module: dooservice_brain
 #. odoo-python
@@ -552,3 +543,191 @@ msgstr "Tu consultora lee su código antes de aprobarla: cambia lo que Odoo hace
 #: model:ir.module.category,name:dooservice_brain.category_assistant
 msgid "Dooservice Assistant"
 msgstr "Asistente Dooservice"
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_guard.py:0
+msgid "This piece is not in a chat of yours."
+msgstr "Esta pieza no está en un chat tuyo."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_guard.py:0
+msgid "This piece cannot do that."
+msgstr "Esta pieza no puede hacer eso."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_actions.py:0
+msgid "Choose an option first."
+msgstr "Elige primero una opción."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_actions.py:0
+msgid "Say what to change first."
+msgstr "Di primero qué cambiar."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_actions.py:0
+msgid "This draft was not sent."
+msgstr "Este borrador no se envió."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_actions.py:0
+msgid "Rate it up or down."
+msgstr "Valóralo a favor o en contra."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/card_actions.py:0
+msgid "This question is not yours."
+msgstr "Esta pregunta no es tuya."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/draft_sending.py:0
+msgid "%(name)s asks for this from the assistant's chat."
+msgstr "%(name)s pide esto desde el chat del asistente."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/draft_sending.py:0
+msgid "This request is not yours."
+msgstr "Esta solicitud no es tuya."
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/chart_counting.py:0
+msgid "None"
+msgstr "Ninguno"
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/cards_html.py:0
+msgid "Done"
+msgstr "Hecho"
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/cards_html.py:0
+msgid "Answer in the chat."
+msgstr "Responde en el chat."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#. odoo-python
+#: code:addons/dooservice_brain/services/cards_html.py:0
+#: code:addons/dooservice_brain/static/src/cards/chart.xml:0
+msgid "Nothing to count."
+msgstr "Nada que contar."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#. odoo-python
+#: code:addons/dooservice_brain/services/cards_html.py:0
+#: code:addons/dooservice_brain/static/src/cards/cards.xml:0
+msgid "Retry"
+msgstr "Reintentar"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#. odoo-python
+#: code:addons/dooservice_brain/services/cards_html.py:0
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Cancelled: nothing was created."
+msgstr "Cancelado: no se creó nada."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#. odoo-python
+#: code:addons/dooservice_brain/services/cards_html.py:0
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Ask an administrator"
+msgstr "Pedírselo a un administrador"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/cards.xml:0
+msgid "Useful"
+msgstr "Útil"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/cards.xml:0
+msgid "Not useful"
+msgstr "No me sirvió"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/cards.xml:0
+msgid "Retrying…"
+msgstr "Reintentando…"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Correct"
+msgstr "Corregir"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "You may only ask: an administrator reads it and sends it."
+msgstr "Solo puedes preguntar: un administrador lo lee y lo envía."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Nothing is created."
+msgstr "No se crea nada."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "The request stops here."
+msgstr "La solicitud se detiene aquí."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Cancel request"
+msgstr "Cancelar solicitud"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "It could not be read back now; nothing was sent."
+msgstr "No se pudo leer ahora; no se envió nada."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "What should change?"
+msgstr "¿Qué debería cambiar?"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Read again"
+msgstr "Leer de nuevo"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/draft.xml:0
+msgid "Asked of an administrator."
+msgstr "Pedido a un administrador."
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/chart.xml:0
+msgid "Counting…"
+msgstr "Contando…"
+
+#. module: dooservice_brain
+#. odoo-javascript
+#: code:addons/dooservice_brain/static/src/cards/chart.xml:0
+msgid "You cannot see these records."
+msgstr "No puedes ver estos registros."
