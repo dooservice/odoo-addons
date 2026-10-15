@@ -21,9 +21,12 @@ stay in this database.
 
 ## Dooservice Connect
 
-`dooservice_connect` signs a person in from **Connect** in the panel, as the Odoo user whose
-login or email is theirs. The panel signs a link for that person, for the address it
-opens, valid once and for a minute; this Odoo checks it with the platform's public key.
+`dooservice_connect` signs a person in from **Open instance** in the panel as this Odoo's
+administrator, as Connect does on Odoo.sh: the panel's account is never the person's Odoo
+user. The panel decides who may (a developer of the environment; on production, only a
+project admin) and signs a link for the address it opens, valid once and for a minute; this
+Odoo checks it with the platform's public key, logs who came in, and sends anything it
+cannot accept to its own login page.
 
 It is a server-wide module, loaded from `odoo.conf` and never installed: a database taken
 elsewhere carries nothing of it, and the links already used are remembered beside the
