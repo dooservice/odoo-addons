@@ -1,8 +1,7 @@
 """The states and kinds of a request, as the platform names them, and following them from it."""
 
 from odoo import _
-
-from ..services.client import AssistantClient, AssistantError
+from .client import AssistantClient, AssistantError
 
 KINDS = [("view", "View"), ("automate", "Automation"), ("build", "Development"), ("adopt", "Taken into a module")]
 STATES = [

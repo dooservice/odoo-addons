@@ -27,6 +27,9 @@ class FakePlatform:
     def understand(self, *args):
         return self.reply("understand", *args)
 
+    def feedback(self, *args):
+        return self.reply("feedback", *args)
+
     def submit(self, *args):
         return self.reply("submit", *args)
 

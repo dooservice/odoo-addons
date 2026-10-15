@@ -4,7 +4,8 @@ Posting returns at once; the task is triggered to run now and posts the answer a
 Dooservice in the same chat. The question and its answer stay in this database only.
 """
 
-from odoo import _, api, fields, models
+from odoo import _
+from odoo import api, fields, models
 from odoo.tools import html2plaintext
 
 from ..constants import ANSWER_CRON, BOT_PARTNER, GROUP_ASK, QUESTION_MAX_CHARACTERS, QUESTIONS_PER_RUN
