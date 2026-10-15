@@ -88,6 +88,13 @@ class TestChat(TransactionCase):
         self.assertIn("reached its limit", self.last_said(channel).body)
         self.assertEqual((question.state, question.error), ("failed", "ai_limit_reached"))
 
+    def test_a_plan_on_hold_is_said_in_its_own_words(self):
+        channel = self.say(self.ana, "Who approves discounts?")
+
+        self.answered(FakePlatform(refusal="assistant_on_hold"))
+
+        self.assertIn("plan is on hold", self.last_said(channel).body)
+
     def test_dooservice_does_not_answer_itself(self):
         channel = self.chat_of(self.ana)
         with patch.object(type(self.env["dooservice.brain.question"]), "create") as created:
