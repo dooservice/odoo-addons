@@ -531,3 +531,19 @@ msgstr "la cuenta de %(name)s"
 #: code:addons/dooservice_brain/services/answer_body.py:0
 msgid "this project's own account"
 msgstr "la cuenta propia de este proyecto"
+
+#. module: dooservice_brain
+#. odoo-python
+#: code:addons/dooservice_brain/services/wording.py:0
+msgid "The assistant is paused while this project's plan is on hold. Ask your consultant."
+msgstr "El asistente está en pausa mientras el plan de este proyecto esté retenido. Consulta con tu consultora."
+
+#. module: dooservice_brain
+#: model:ir.model.fields.selection,name:dooservice_brain.selection__dooservice_brain_request__kind__adopt
+msgid "Taken into a module"
+msgstr "Paso a módulo"
+
+#. module: dooservice_brain
+#: model_terms:ir.ui.view,arch_db:dooservice_brain.view_request_form
+msgid "Your consultant reads its code before approving it: it changes what Odoo does on its own."
+msgstr "Tu consultora lee su código antes de aprobarla: cambia lo que Odoo hace por su cuenta."
