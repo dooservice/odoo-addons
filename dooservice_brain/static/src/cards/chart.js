@@ -1,4 +1,4 @@
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component, onMounted, useState } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 
 const WIDTH = 300;
@@ -15,8 +15,10 @@ export class DooserviceChart extends Component {
         this.state = useState({ groups: [], denied: "", loaded: false });
         this.width = WIDTH;
         this.height = HEIGHT;
-        onWillStart(async () => {
-            const counted = await this.orm.call("res.users", "dooservice_brain_chart", [this.props.messageId, this.props.card.id]);
+        onMounted(async () => {
+            const counted = await this.orm
+                .call("res.users", "dooservice_brain_chart", [this.props.messageId, this.props.card.id])
+                .catch(() => ({ denied: "unknown" }));
             Object.assign(this.state, { groups: counted.groups || [], denied: counted.denied || "", loaded: true });
         });
     }
