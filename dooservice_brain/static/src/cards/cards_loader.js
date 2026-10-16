@@ -1,4 +1,10 @@
-/** The pieces of many answers asked in one call, and Dooservice's partner asked once. */
+/**
+ * The pieces of many answers asked in one call, and Dooservice's partner asked once.
+ *
+ * Shared by every message, so it holds the web client's own ORM, never one bound to a
+ * component: a message is destroyed and made again as the chat renders, and a call through
+ * its ORM would then never answer. A call that fails answers "no pieces".
+ */
 export class CardsLoader {
     static shared = null;
 
@@ -14,7 +20,7 @@ export class CardsLoader {
     }
 
     bot() {
-        this.botPromise ??= this.orm.call("res.users", "dooservice_brain_bot", []);
+        this.botPromise ??= this.orm.call("res.users", "dooservice_brain_bot", []).catch(() => false);
         return this.botPromise;
     }
 
@@ -30,7 +36,7 @@ export class CardsLoader {
     async flush() {
         const waiting = this.waiting;
         this.waiting = new Map();
-        const found = await this.orm.call("res.users", "dooservice_brain_cards", [[...waiting.keys()]]);
+        const found = await this.orm.call("res.users", "dooservice_brain_cards", [[...waiting.keys()]]).catch(() => ({}));
         for (const [messageId, resolvers] of waiting) {
             resolvers.forEach((resolve) => resolve(found[messageId] || null));
         }

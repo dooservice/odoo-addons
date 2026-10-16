@@ -1,4 +1,4 @@
-import { Component, onWillStart, onWillUnmount, proxy, useProps } from "@odoo/owl";
+import { Component, onMounted, onWillUnmount, proxy, useProps } from "@odoo/owl";
 import { useService } from "@web/core/utils/hooks";
 
 import { CardsLoader } from "./cards_loader";
@@ -17,8 +17,11 @@ export class DooserviceCards extends Component {
         this.orm = useService("orm");
         this.steps = STEPS;
         this.state = proxy({ payload: null, busy: "", picked: {}, typed: {}, correcting: {} });
-        onWillStart(() => this.load());
-        onWillUnmount(() => clearInterval(this.following));
+        onMounted(() => this.load());
+        onWillUnmount(() => {
+            this.gone = true;
+            clearInterval(this.following);
+        });
     }
 
     get messageId() {
@@ -26,7 +29,7 @@ export class DooserviceCards extends Component {
     }
 
     async load() {
-        const loader = CardsLoader.of(this.orm);
+        const loader = CardsLoader.of(this.env.services.orm);
         const author = this.props.message.author_id || this.props.message.author;
         const bot = await loader.bot();
         if (bot && author?.id === bot && Number.isInteger(this.messageId)) {
@@ -35,11 +38,14 @@ export class DooserviceCards extends Component {
     }
 
     show(payload) {
+        if (this.gone) {
+            return;
+        }
         this.state.payload = payload;
         clearInterval(this.following);
         const open = Object.values(payload?.requests || {}).some((request) => !request.finished);
         if (open) {
-            this.following = setInterval(async () => this.show(await CardsLoader.of(this.orm).cards(this.messageId)), FOLLOW_MS);
+            this.following = setInterval(async () => this.show(await CardsLoader.of(this.env.services.orm).cards(this.messageId)), FOLLOW_MS);
         }
     }
 
