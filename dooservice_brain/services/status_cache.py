@@ -1,4 +1,4 @@
-"""Which model answers and on whose account, asked once every few minutes per database."""
+"""What the platform says of this project, hours and reviewed processes, asked once every few minutes per database."""
 
 import time
 

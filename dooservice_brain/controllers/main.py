@@ -1,33 +1,28 @@
+"""Odoo 16: a piece's link in a message, pressed; the chat says what it did, or why it could not."""
+
 from odoo import http
 from odoo.exceptions import AccessError, UserError
 from odoo.http import request
 from odoo.tools import consteq
 
-from ..constants import GROUP_REQUEST
+from ..services.bot_posting import BotPosting
 from ..services.card_actions import CardActions
 from ..services.cards_html import CardsHtml
 
+DISCUSS = "/web#action=mail.action_discuss&active_id=mail.channel_{}"
 
-class AssistantController(http.Controller):
-    @http.route("/dooservice_brain/request/<int:question_id>", type="http", auth="user")
-    def request_from_question(self, question_id):
-        """From «Request it» under an earlier answer: the request read back, opened for the person to send."""
-        if not request.env.user.has_group(GROUP_REQUEST):
-            return request.redirect("/web")
-        question = request.env["dooservice.brain.question"].browse(question_id).exists()
-        if not question or question.user_id != request.env.user:
-            return request.redirect("/web")
-        created = request.env["dooservice.brain.request"]._from_question(question)
-        return request.redirect(f"/web#model=dooservice.brain.request&id={created.id}&view_type=form")
 
+class CardController(http.Controller):
     @http.route("/dooservice_brain/card/<int:message_id>/<string:card_id>/<string:action>", type="http", auth="user")
-    def card_action(self, message_id, card_id, action, value="", token=""):
-        """A link in an answer, in Odoo 16: done once, for the person whose chat it is."""
-        expected = CardsHtml.token(request.env, request.env.uid, message_id, card_id, action, value)
-        if consteq(expected, token):
-            try:
-                CardActions(request.env).act(message_id, card_id, action, value or None)
-            except (AccessError, UserError):
-                request.env.cr.rollback()
-        message = request.env["mail.message"].sudo().browse(message_id)
-        return request.redirect(f"/web#action=mail.action_discuss&active_id=mail.channel_{message.res_id}")
+    def card_action(self, message_id, card_id, action, value="", label="", token=""):
+        message = request.env["mail.message"].sudo().browse(message_id).exists()
+        expected = CardsHtml.token(request.env, message_id, card_id, action, value, label)
+        if not message or not consteq(expected, token):
+            return request.redirect("/web")
+        try:
+            CardActions(request.env).act(message_id, card_id, action, value or None, label)
+        except (AccessError, UserError) as error:
+            request.env.cr.rollback()
+            channel = request.env[message.model].sudo().browse(message.res_id)
+            BotPosting(request.env).post(channel, str(error))
+        return request.redirect(DISCUSS.format(message.res_id))

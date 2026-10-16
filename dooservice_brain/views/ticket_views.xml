@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ticket_form" model="ir.ui.view">
+        <field name="name">dooservice.ticket.form</field>
+        <field name="model">dooservice.ticket</field>
+        <field name="arch" type="xml">
+            <form create="false" edit="false" delete="false">
+                <header>
+                    <button name="action_open_chat" type="object" string="Open chat" class="btn-primary" attrs="{'invisible': [('channel_id', '=', False)]}"/>
+                    <button name="action_new_ticket" type="object" string="New ticket"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <field name="channel_id" invisible="1"/>
+                    <div class="oe_title">
+                        <h1><field name="number"/></h1>
+                        <h2><field name="title"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="kind"/>
+                            <field name="process_name"/>
+                            <field name="change_stage" attrs="{'invisible': [('change_stage', '=', False)]}"/>
+                            <field name="waiting_for" attrs="{'invisible': [('waiting_for', '=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="deadline" attrs="{'invisible': [('deadline', '=', False)]}"/>
+                            <field name="continues_id" attrs="{'invisible': [('continues_id', '=', False)]}"/>
+                            <field name="write_date" string="Updated"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="text"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ticket_list" model="ir.ui.view">
+        <field name="name">dooservice.ticket.tree</field>
+        <field name="model">dooservice.ticket</field>
+        <field name="arch" type="xml">
+            <tree create="false" delete="false">
+                <header>
+                    <button name="action_new_ticket" type="object" string="New ticket" class="btn-primary"/>
+                </header>
+                <field name="channel_id" invisible="1"/>
+                <field name="number"/>
+                <field name="title"/>
+                <field name="kind"/>
+                <field name="process_name"/>
+                <field name="user_id" optional="hide"/>
+                <field name="state" widget="badge" decoration-success="state == 'resolved'" decoration-info="state in ('open', 'running')" decoration-warning="state in ('waiting_consultant', 'waiting_user')" decoration-muted="state == 'closed'"/>
+                <field name="write_date" string="Updated"/>
+                <button name="action_open_chat" type="object" string="Open chat" icon="fa-comments" attrs="{'invisible': [('channel_id', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_ticket_search" model="ir.ui.view">
+        <field name="name">dooservice.ticket.search</field>
+        <field name="model">dooservice.ticket</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number"/>
+                <field name="title"/>
+                <field name="process_name"/>
+                <filter name="open" string="Open" domain="[('state', '!=', 'closed')]"/>
+                <filter name="closed" string="Closed" domain="[('state', '=', 'closed')]"/>
+                <separator/>
+                <filter name="mine" string="My tickets" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                <filter name="group_kind" string="Kind" context="{'group_by': 'kind'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_tickets" model="ir.actions.act_window">
+        <field name="name">My tickets</field>
+        <field name="res_model">dooservice.ticket</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No tickets yet</p>
+            <p>Press the bulb on any screen to ask, report an incident or request a change. Each ticket gets its own chat.</p>
+        </field>
+    </record>
+</odoo>
