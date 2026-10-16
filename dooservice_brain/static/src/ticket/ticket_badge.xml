@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="dooservice_brain.TicketBadge">
+        <div t-if="header" class="o-dooservice-badge d-flex align-items-center gap-1 ms-2" t-att-class="{ 'small': props.small }">
+            <span class="text-muted small"><t t-out="header.kind_label"/><t t-if="header.process"> · <t t-out="header.process"/></t></span>
+            <span class="badge rounded-pill" t-att-class="tone" t-out="header.state_label"/>
+        </div>
+    </t>
+</templates>

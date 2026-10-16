@@ -1,9 +1,9 @@
 {
-    "name": "Dooservice Assistant",
-    "summary": "Ask how your company works in Odoo, and request new views",
-    "description": "Chat with Dooservice in Discuss: it answers from the processes your consultants reviewed, "
-    "and turns what you want to see into a request they build and approve.",
-    "version": "18.0.1.2.1",
+    "name": "Dooservice",
+    "summary": "Open tickets to your consultancy from any screen, and follow them in Discuss",
+    "description": "Questions, incidents and changes go to Dooservice as tickets, each with its own chat in "
+    "Discuss: it answers from the processes your consultants reviewed, and carries what needs them to them.",
+    "version": "18.0.2.0.0",
     "category": "Productivity/Discuss",
     "license": "LGPL-3",
     "author": "Dooservice",
@@ -15,7 +15,7 @@
         "security/rules.xml",
         "data/partner.xml",
         "data/crons.xml",
-        "views/request_views.xml",
+        "views/ticket_views.xml",
         "views/menus.xml",
     ],
     "assets": {
