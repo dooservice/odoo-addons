@@ -3,7 +3,7 @@
     <record id="partner_dooservice" model="res.partner">
         <field name="name">Dooservice</field>
         <field name="active" eval="True"/>
-        <field name="image_1920" type="base64" file="dooservice_brain/static/description/icon.png"/>
+        <field name="image_1920" type="bytes" file="dooservice_brain/static/description/icon.png"/>
     </record>
     <record id="user_dooservice" model="res.users">
         <field name="login">dooservice-assistant</field>

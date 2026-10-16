@@ -8,18 +8,18 @@ import requests
 
 from odoo.tools import config
 
-from ..constants import CONFIG_KEY, CONFIG_URL, DEFAULT_URL, TIMEOUT_SECONDS
+from ..constants import API_PREFIX, CONFIG_KEY, CONFIG_URL, DEFAULT_URL, TIMEOUT_SECONDS
 
 
-class AssistantError(Exception):
-    """What the platform refused, by its code: `no_ai_account`, `assistant_not_ready`, ..."""
+class BusinessError(Exception):
+    """What the platform refused, by its code: `no_ai_account`, `business_disabled`, ..."""
 
     def __init__(self, code, detail=""):
         super().__init__(detail or code)
         self.code = code
 
 
-class AssistantClient:
+class BusinessClient:
     def __init__(self, key=None, url=None, session=None):
         self.key = key if key is not None else (config.get(CONFIG_KEY) or "")
         self.url = (url or config.get(CONFIG_URL) or DEFAULT_URL).rstrip("/")
@@ -31,51 +31,37 @@ class AssistantClient:
 
     def call(self, method, path, body=None, params=None):
         if not self.configured:
-            raise AssistantError("assistant_not_configured")
+            raise BusinessError("business_not_configured")
         try:
             response = self.session.request(
                 method,
-                f"{self.url}/assistant{path}",
+                f"{self.url}{API_PREFIX}{path}",
                 json=body,
                 params=params,
                 headers={"Authorization": f"Bearer {self.key}"},
                 timeout=TIMEOUT_SECONDS,
             )
         except requests.RequestException as error:
-            raise AssistantError("assistant_unreachable", str(error)) from error
+            raise BusinessError("business_unreachable", str(error)) from error
         try:
             document = response.json()
         except ValueError:
             document = {}
         if response.status_code >= 400:
-            raise AssistantError(str(document.get("code") or response.status_code), str(document.get("detail", "")))
+            raise BusinessError(str(document.get("code") or response.status_code), str(document.get("detail", "")))
         return document
 
     def status(self):
         return self.call("GET", "")
 
-    def ask(self, question, screen_model, language, history):
-        body = {"question": question, "screen_model": screen_model, "language": language, "history": history}
-        return self.call("POST", "/ask", body)
+    def open_ticket(self, body):
+        return self.call("POST", "/tickets", body)
 
-    def understand(self, text, screen_model, language, login, name):
-        body = {
-            "text": text,
-            "screen_model": screen_model,
-            "language": language,
-            "user_login": login,
-            "user_name": name,
-        }
-        return self.call("POST", "/requests", body)
+    def messages(self, number, since):
+        return self.call("GET", f"/tickets/{number}/messages", params={"since": since} if since else None)
 
-    def feedback(self, question, rating, name):
-        return self.call("POST", "/feedback", {"question": question, "rating": rating, "user_name": name})
+    def send(self, number, body):
+        return self.call("POST", f"/tickets/{number}/messages", body)
 
-    def submit(self, remote_id):
-        return self.call("POST", f"/requests/{remote_id}/submit")
-
-    def cancel(self, remote_id):
-        return self.call("POST", f"/requests/{remote_id}/cancel")
-
-    def requests(self):
-        return self.call("GET", "/requests").get("requests", [])
+    def act(self, number, body):
+        return self.call("POST", f"/tickets/{number}/act", body)

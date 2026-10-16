@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="mail.DiscussContent" t-inherit-mode="extension">
+        <xpath expr="//AutoresizeInput[@onValidate.bind='this.renameThread']" position="after">
+            <TicketBadge thread="this.thread"/>
+        </xpath>
+    </t>
+
+    <t t-inherit="mail.ChatWindow.headerContent" t-inherit-mode="extension">
+        <xpath expr="//div[@t-out='this.props.chatWindow.channel.displayName']" position="after">
+            <TicketBadge t-if="this.channel" thread="this.channel.thread" small="true"/>
+        </xpath>
+    </t>
+</templates>

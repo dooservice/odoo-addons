@@ -1,52 +1,78 @@
-"""Where the assistant answers from, how long it waits, and what it keeps of a conversation."""
+"""Where the platform is, what a ticket can be, and what a person may do with the pieces of a message."""
 
 #: The options of odoo.conf the platform writes for this database: never stored in it.
 CONFIG_KEY = "dooservice_assistant_key"
 CONFIG_URL = "dooservice_assistant_url"
 #: Where the platform answers when odoo.conf names no other address.
 DEFAULT_URL = "https://api.dooservice.sh/api/v2"
+#: The routes of the platform this module talks to, under its address.
+API_PREFIX = "/business/odoo"
 
 #: The platform waits two minutes for a slow model; the call waits a little longer.
 TIMEOUT_SECONDS = 150
-#: How many earlier messages of the chat travel with a question.
-HISTORY_TURNS = 6
-#: How many questions one run of the answering task takes before it lets another run.
-QUESTIONS_PER_RUN = 20
-#: How long the line under each answer, which model and whose account, is kept before asking again.
+#: How long the status of the platform, hours and reviewed processes, is kept before asking again.
 STATUS_KEPT_SECONDS = 10 * 60
-
-#: The longest question the platform takes, in characters.
-QUESTION_MAX_CHARACTERS = 2000
+#: The longest text the platform takes in one message, in characters.
+TEXT_MAX_CHARACTERS = 2000
+#: How many open tickets one run of the sync task refreshes before it lets another run.
+TICKETS_PER_RUN = 50
 
 #: The XML ids this module is found by.
 BOT_PARTNER = "dooservice_brain.partner_dooservice"
+BOT_USER = "dooservice_brain.user_dooservice"
 GROUP_ASK = "dooservice_brain.group_ask"
 GROUP_REQUEST = "dooservice_brain.group_request"
-ANSWER_CRON = "dooservice_brain.cron_answer_questions"
+GROUP_RESPONSIBLE = "dooservice_brain.group_responsible"
+SYNC_CRON = "dooservice_brain.cron_sync_tickets"
+DISCUSS_ACTION = "mail.action_discuss"
+NEW_TICKET_ACTION = "dooservice_brain.new_ticket"
 
-#: The pieces the module adds to an answer besides the ones the platform sends.
-SOURCES_CARD = "sources"
-META_CARD = "meta"
-FEEDBACK_CARD = "feedback"
-ERROR_CARD = "error"
-DRAFT_CARD = "draft"
-CHOICE_CARDS = ("choice", "multi", "field")
-#: What a person may do with a piece, by its type.
+#: How a ticket is named in its chat and its list: the prefix and the width of its number.
+TICKET_PREFIX = "T-"
+TICKET_NUMBER_WIDTH = 4
+
+#: The kinds of ticket, as the platform names them.
+TICKET_KINDS = [("question", "Question"), ("incident", "Incident"), ("change", "Change"), ("report", "Report")]
+#: The states of a ticket, as the platform names them.
+TICKET_STATES = [
+    ("open", "Open"),
+    ("running", "In progress"),
+    ("waiting_consultant", "Waiting for the consultancy"),
+    ("waiting_user", "Waiting for your answer"),
+    ("resolved", "Resolved"),
+    ("closed", "Closed"),
+]
+#: Where a change ticket stands, as the platform names it.
+CHANGE_STAGES = [
+    ("opened", "Opened"),
+    ("understood", "Understood"),
+    ("plan", "Planned"),
+    ("rehearsal", "Rehearsed"),
+    ("to_approve", "To approve"),
+    ("applied", "Applied"),
+    ("verified", "Verified"),
+    ("closed", "Closed"),
+    ("rejected", "Rejected"),
+    ("undone", "Undone"),
+    ("out_of_scope", "Out of scope"),
+]
+#: Who a waiting ticket waits for.
+WAITING_FOR = [("consultant", "The consultancy"), ("responsible", "The Dooservice responsible"), ("user", "You")]
+#: Who wrote a message the platform returns.
+MESSAGE_AUTHORS = ("user", "assistant", "consultant", "responsible", "system")
+#: Tickets in these states change no more.
+CLOSED_STATES = ("closed",)
+
+#: What a person may do with a piece, by its type; pieces without actions are only read.
 CARD_ACTIONS = {
-    "choice": ("choose",),
-    "multi": ("choose",),
-    "field": ("choose",),
-    "draft": ("send", "cancel", "correct", "cancel_request"),
-    "feedback": ("rate",),
-    "error": ("retry",),
+    "resolved": ("yes", "no"),
+    "understood": ("yes", "correct", "cancel"),
+    "approval": ("approve", "decline"),
+    "rating": ("rate",),
 }
+#: The piece the bot adds itself when a closed ticket is written to.
+CONTINUE_CARD = "continue"
 #: The ratings a person gives an answer.
 RATINGS = ("up", "down")
-#: The group of the administrators, who see every request and send the ones asked of them.
-GROUP_SYSTEM = "base.group_system"
-#: How many groups a chart in the chat draws, the largest first.
-CHART_GROUPS_MAX = 12
-#: Requests in these states change no more: their piece stops asking for news.
-FINISHED_REQUEST_STATES = ("deployed", "rejected", "cancelled", "failed")
-#: The refusals worth trying again a minute later: the platform or the model was away.
-RETRIABLE = ("assistant_unreachable", "assistant_not_ready")
+#: The pieces only a Dooservice responsible may press.
+RESPONSIBLE_CARDS = ("approval",)

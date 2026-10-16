@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="dooservice_brain.TicketSystray">
+        <div t-if="state.allowed" class="o_nav_entry" role="button" title="New ticket for Dooservice" t-on-click="open">
+            <i class="fa fa-lightbulb-o fa-lg" aria-label="New ticket for Dooservice"/>
+        </div>
+    </t>
+</templates>

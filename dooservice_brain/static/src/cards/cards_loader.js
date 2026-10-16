@@ -1,5 +1,5 @@
 /**
- * The pieces of many answers asked in one call, and Dooservice's partner asked once.
+ * The pieces of many messages asked in one call, and Dooservice's partner asked once.
  *
  * Shared by every message, so it holds the web client's own ORM, never one bound to a
  * component: a message is destroyed and made again as the chat renders, and a call through

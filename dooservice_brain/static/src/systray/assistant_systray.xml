@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
-    <t t-name="dooservice_brain.AssistantSystray">
-        <div t-if="state.allowed" class="o_nav_entry" role="button" title="Dooservice" t-on-click="open">
-            <i class="fa fa-lightbulb-o fa-lg" aria-label="Dooservice"/>
-        </div>
-    </t>
-</templates>
