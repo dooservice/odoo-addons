@@ -11,60 +11,31 @@
             <t t-foreach="this.state.payload.cards" t-as="card" t-key="card.id">
                 <t t-set="done" t-value="this.done(card)"/>
                 <div t-if="card.type === 'sources'" class="d-flex flex-wrap gap-1 small">
-                    <span t-foreach="card.items" t-as="item" t-key="item_index" class="badge text-bg-light border" t-out="item"/>
+                    <span t-foreach="card.items or []" t-as="item" t-key="item_index" class="badge text-bg-light border" t-out="item"/>
                 </div>
                 <div t-elif="card.type === 'meta'" class="small text-muted" t-out="card.text"/>
-                <div t-elif="card.type === 'feedback'" class="d-flex gap-1">
-                    <button class="btn btn-sm" t-att-class="done.value === 'up' ? 'btn-primary' : 'btn-light'" t-att-disabled="done.done or this.state.busy" title="Useful" t-on-click="() => this.act(card, 'rate', 'up')">👍</button>
-                    <button class="btn btn-sm" t-att-class="done.value === 'down' ? 'btn-primary' : 'btn-light'" t-att-disabled="done.done or this.state.busy" title="Not useful" t-on-click="() => this.act(card, 'rate', 'down')">👎</button>
-                </div>
-                <div t-elif="card.type === 'error'">
-                    <button class="btn btn-sm btn-secondary" t-att-disabled="done.done or this.state.busy" t-on-click="() => this.act(card, 'retry')">
-                        <t t-if="done.done">Retrying…</t><t t-else="">Retry</t>
-                    </button>
-                </div>
-                <div t-elif="card.type === 'choice'" class="o-dooservice-card">
+                <div t-else="" class="o-dooservice-card">
                     <div t-if="card.title" class="fw-bold mb-1" t-out="card.title"/>
-                    <div class="o-dooservice-buttons d-flex flex-wrap gap-1">
-                        <button t-foreach="card.options" t-as="option" t-key="option.value" class="btn btn-sm" t-att-class="done.value === option.label ? 'btn-primary' : 'btn-outline-primary'" t-att-title="option.hint" t-att-disabled="done.done or this.state.busy" t-on-click="() => this.act(card, 'choose', option.value)" t-out="option.label"/>
+                    <div t-if="card.text" class="small" t-out="card.text"/>
+                    <div t-if="(card.items or []).length" class="d-flex flex-wrap gap-1 my-1">
+                        <span t-foreach="card.items" t-as="item" t-key="item_index" class="badge text-bg-light border" t-out="item"/>
                     </div>
-                </div>
-                <div t-elif="card.type === 'multi'" class="o-dooservice-card">
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="fw-bold flex-grow-1" t-out="card.title"/>
-                        <button t-if="!done.done" class="btn btn-sm btn-primary" t-att-disabled="!(this.state.picked[card.id] or []).length or this.state.busy" t-on-click="() => this.act(card, 'choose', this.state.picked[card.id])">Send</button>
-                    </div>
-                    <div t-if="done.done" class="small" t-out="done.value"/>
-                    <label t-else="" t-foreach="card.options" t-as="option" t-key="option.value" class="d-flex gap-2 small" t-att-title="option.hint">
-                        <input type="checkbox" t-att-checked="(this.state.picked[card.id] or []).includes(option.value)" t-on-change="() => this.toggle(card, option.value)"/>
-                        <span t-out="option.label"/>
-                    </label>
-                </div>
-                <div t-elif="card.type === 'field'" class="o-dooservice-card">
-                    <div class="fw-bold mb-1" t-out="card.title"/>
-                    <div t-if="done.done" class="small" t-out="done.value"/>
-                    <div t-else="" class="d-flex gap-1">
-                        <input class="form-control form-control-sm" t-att-type="card.kind === 'number' ? 'number' : card.kind === 'date' ? 'date' : 'text'" t-att-placeholder="card.placeholder" t-att-value="this.state.typed[card.id] or ''" t-on-input="(ev) => this.state.typed[card.id] = ev.target.value"/>
-                        <button class="btn btn-sm btn-primary" t-att-disabled="!this.state.typed[card.id] or this.state.busy" t-on-click="() => this.act(card, 'choose', this.state.typed[card.id])">Send</button>
-                    </div>
-                </div>
-                <t t-elif="card.type === 'draft'" t-call="dooservice_brain.Draft"/>
-                <div t-elif="card.type === 'flow'" class="o-dooservice-card">
-                    <div class="fw-bold mb-1" t-out="card.title"/>
-                    <div class="d-flex flex-wrap align-items-center gap-1 small">
-                        <t t-foreach="card.steps" t-as="step" t-key="step_index">
-                            <span class="badge text-bg-light border" t-out="(step_index + 1) + '. ' + step.title"/>
-                            <i t-if="!step_last" class="fa fa-angle-right text-muted"/>
-                        </t>
-                    </div>
-                </div>
-                <DooserviceChart t-elif="card.type === 'chart'" card="card" messageId="this.messageId"/>
-                <div t-elif="card.type === 'table'" class="o-dooservice-card overflow-auto">
-                    <div t-if="card.title" class="fw-bold mb-1" t-out="card.title"/>
-                    <table class="table table-sm small mb-0">
-                        <thead><tr><th t-foreach="card.columns" t-as="column" t-key="column_index" t-out="column"/></tr></thead>
-                        <tbody><tr t-foreach="card.rows" t-as="row" t-key="row_index"><td t-foreach="row" t-as="cell" t-key="cell_index" t-out="cell"/></tr></tbody>
-                    </table>
+                    <div t-if="card.footer" class="small text-muted" t-out="card.footer"/>
+                    <t t-if="card.type === 'continue'">
+                        <button class="btn btn-sm btn-primary mt-1" t-on-click="() => this.continueFrom(card)">Open a new linked ticket</button>
+                    </t>
+                    <t t-elif="done.done">
+                        <div class="small text-muted mt-1"><i class="fa fa-check me-1"/><t t-out="this.chosen(card)"/><t t-if="done.value">: <t t-out="done.value"/></t></div>
+                    </t>
+                    <t t-elif="this.actionable(card)">
+                        <div class="o-dooservice-buttons d-flex flex-wrap gap-1 mt-2">
+                            <button t-foreach="this.options(card)" t-as="option" t-key="option.value" class="btn btn-sm" t-att-class="option_first ? 'btn-primary' : 'btn-outline-primary'" t-att-disabled="this.state.busy" t-on-click="() => this.press(card, option)" t-out="option.label"/>
+                        </div>
+                        <div t-if="this.state.correcting[card.id]" class="d-flex flex-column gap-1 mt-1">
+                            <textarea class="form-control form-control-sm" rows="2" t-att-value="this.state.typed[card.id] or ''" t-on-input="(ev) => this.state.typed[card.id] = ev.target.value" placeholder="What should change?"/>
+                        </div>
+                    </t>
+                    <div t-elif="card.type === 'approval'" class="small text-muted mt-1">Waiting for a Dooservice responsible.</div>
                 </div>
             </t>
         </div>

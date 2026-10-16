@@ -1,31 +1,33 @@
 # Dooservice modules for Odoo, 16.0 to 20.0
 
-Two modules: `dooservice_brain`, the assistant, and `dooservice_connect`, signing in from
-the Dooservice panel.
+Two modules: `dooservice_brain`, **Dooservice**, the tickets to your consultancy, and
+`dooservice_connect`, signing in from the Dooservice panel.
 
-## Dooservice Assistant
+## Dooservice
 
-`dooservice_brain` puts the project's brain where the people who use Odoo already are:
-a chat with **Dooservice** in Discuss.
+`dooservice_brain` (its technical name, kept for the databases that already have it) puts
+the consultancy where the people who use Odoo already are: **tickets** with a chat each in
+Discuss.
 
-- **Ask** how the company works in Odoo: who approves a discount, when an invoice is
-  sent. The answer comes only from the processes the company's consultants reviewed,
-  and says which steps it stands on. The AI sees no record of this Odoo.
-- **Request** a list, a board or a report in your own words. You see what was understood,
-  on about how many records, before you send it. Your consultant builds it as a module
-  in the project's repository, reviews it and approves it; it arrives with the next
-  deploy. Each change of state is written in the request's chatter.
+- **The bulb** in the top bar opens a ticket from any screen: a **question** (how something
+  is done), an **incident** (something did not go as expected) or a **change** (make the
+  system do something different). The screen and the record open go with it as a reference
+  the AI never sees; nothing of the record itself leaves this Odoo.
+- **One chat per ticket**, named `T-0002 · title`, with its kind, process and state over
+  it. Dooservice answers from the processes the company's consultants reviewed and says
+  which steps it stands on; what it cannot answer goes to the consultancy, with the hours
+  it answers in and the deadline visible. A **change** is read back («Is it correct?»),
+  rehearsed on a copy, approved and applied; the person who may only ask leaves it with
+  the company's **Dooservice responsible**.
+- **Pieces with buttons** under the bot's messages: «Was it resolved? Yes, close / No,
+  continue», «Is it correct? Yes / Correct / Cancel», approve or decline, a rating. Nothing
+  moves a ticket without pressing a button that says so, and a button does its thing once.
+  A closed ticket takes no more messages: the bot offers a new ticket linked to it.
+- **Dooservice › My tickets** lists one's own tickets with kind, process, state and when
+  they last moved; the responsible also sees the team's.
 
-- **Answers with buttons**: under its text an answer can carry options to pick, a value to
-  type, a request ready to send or correct, the diagram of the process it stands on, a
-  short table, or a chart counted by this Odoo with your own access (the platform names
-  the model and the field, never sees the figures). Nothing is created, sent or changed
-  without pressing a button that says so, and a button does its thing once. Someone who
-  may only ask leaves a request with an administrator. Each answer can be rated 👍/👎.
-  In Odoo 16 the buttons are signed links in the answer itself.
-
-The first answer of a chat says which model writes them and on whose AI account.
-Questions and answers stay in this database.
+What people write travels to the platform by a task every two minutes, and sooner when
+someone writes; the platform's answers come back the same way, each posted once.
 
 ## Dooservice Connect
 
@@ -62,14 +64,14 @@ dooservice_assistant_key = dsa_...
 dooservice_assistant_url = https://api.dooservice.sh/api/v2
 ```
 
-Then install **Dooservice Assistant** from Apps. The administrator gets **Request changes**
-on install; give everybody else one of its two levels in their user form, under
-**Dooservice Assistant**:
+Then install **Dooservice** from Apps. The administrator is the Dooservice responsible on
+install; give everybody else one of its levels in their user form, under **Dooservice**:
 
 | Level | What it allows |
 |---|---|
-| Ask | chat with Dooservice from the lightbulb in the top bar |
-| Request changes | also send requests and follow them under **Dooservice › Requests** |
+| Ask and report | open questions and incidents from the bulb, and follow them in Discuss |
+| Request changes | also ask for changes in how Odoo works |
+| Dooservice responsible | also approve the changes asked by people who may only ask, and see the team's tickets |
 
 ## Tests
 

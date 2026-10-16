@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem id="menu_root" name="Dooservice" web_icon="dooservice_brain,static/description/icon.png" groups="group_request" sequence="90"/>
-    <menuitem id="menu_requests" name="Requests" parent="menu_root" action="action_requests" sequence="10"/>
+    <menuitem id="menu_root" name="Dooservice" web_icon="dooservice_brain,static/description/icon.png" groups="group_ask" sequence="90"/>
+    <menuitem id="menu_tickets" name="My tickets" parent="menu_root" action="action_tickets" sequence="10"/>
 </odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="dooservice_brain.NewTicketDialog">
+        <Dialog title="title" size="'md'">
+            <div class="d-flex flex-column gap-2">
+                <div t-foreach="kinds" t-as="kind" t-key="kind.value" class="o-dooservice-kind d-flex align-items-center gap-2" t-att-class="{ 'o-dooservice-kind-on': state.kind === kind.value }" role="button" t-on-click="() => state.kind = kind.value">
+                    <span class="fs-4" t-out="kind.icon"/>
+                    <div>
+                        <div class="fw-bold" t-out="kind.label"/>
+                        <div class="small text-muted" t-out="kind.hint"/>
+                    </div>
+                </div>
+                <textarea class="form-control" rows="3" placeholder="What happens? Say it in your own words." t-att-value="state.text" t-on-input="(ev) => state.text = ev.target.value"/>
+                <div t-if="state.screen" class="small text-muted"><i class="fa fa-paperclip me-1"/>This screen is attached: <t t-out="state.screen"/></div>
+                <div t-if="props.continuesNumber" class="small text-muted"><i class="fa fa-link me-1"/>Continues <t t-out="props.continuesNumber"/></div>
+                <div t-if="state.status" class="small" t-att-class="state.status.ready ? 'text-muted' : 'text-danger'" t-out="state.status.line"/>
+            </div>
+            <t t-set-slot="footer">
+                <button class="btn btn-primary" t-att-disabled="!canOpen" t-on-click="open">Open ticket</button>
+                <button class="btn btn-secondary" t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>
