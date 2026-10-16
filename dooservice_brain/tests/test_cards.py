@@ -1,102 +1,96 @@
-"""The pieces under an answer do something only when pressed, and only once.
+"""The pieces under a message move the ticket only when pressed, once, and by who may press them.
 
-A draft is sent as one request however many times it is pressed; cancelled, it leaves
-nothing. Someone who may only ask leaves it with an administrator, and a chart counts only
-what the person may read.
+«Yes, close» closes the ticket; the closed chat then refuses what is written and offers a
+new ticket linked to it. An approval is a responsible's alone.
 """
 
-from odoo.exceptions import AccessError
-from odoo.tests import TransactionCase, new_test_user, tagged
+from odoo.exceptions import AccessError, UserError
+from odoo.tests import tagged
 
-from odoo.addons.dooservice_brain.services.answering import Answering
 from odoo.addons.dooservice_brain.services.card_actions import CardActions
-from odoo.addons.dooservice_brain.services.chart_counting import ChartCounting
+from odoo.addons.dooservice_brain.services.card_payload import CardPayload
+from odoo.addons.dooservice_brain.services.ticket_sync import TicketSync
 
-from .platform import FakePlatform
-from .test_requests import READ_BACK
-
-DRAFTED = {
-    "called": True,
-    "answer": "I can ask for that board.",
-    "sources": [],
-    "found": True,
-    "suggest_request": True,
-    "cards": [{"type": "draft", "title": "Orders by channel", "text": "A board of orders by channel"}],
-}
+from .common import TicketCase
+from .platform import APPROVAL, CLOSED, RESOLVED
 
 
 @tagged("post_install", "-at_install")
-class TestCards(TransactionCase):
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.ana = new_test_user(cls.env, "ana", groups="base.group_user,dooservice_brain.group_request")
-        cls.eva = new_test_user(cls.env, "eva", groups="base.group_user,dooservice_brain.group_ask")
+class TestCards(TicketCase):
+    def with_card(self, user, card_message, kind="incident"):
+        ticket, platform = self.opened(user, kind=kind)
+        platform.answers["messages"] = lambda number, since: {"ticket": {}, "messages": [card_message]}
+        TicketSync(self.env, platform).run()
+        return ticket, platform, self.said(ticket.channel_id)
 
-    def answer_for(self, user, platform):
-        self.env["res.users"].with_user(user).dooservice_brain_open("sale.order")
-        channel = self.env["res.users"].with_user(user)._dooservice_brain_chat()
-        channel.with_user(user).message_post(
-            body="A board, please", message_type="comment", subtype_xmlid="mail.mt_comment"
-        )
-        question = self.env["dooservice.brain.question"].search([("user_id", "=", user.id)], limit=1)
-        Answering(self.env, platform).answer(question)
-        return self.env["mail.message"].search([("model", "=", channel._name), ("res_id", "=", channel.id)], limit=1)
+    def test_yes_close_closes_the_ticket_and_says_so(self):
+        ticket, platform, message = self.with_card(self.ana, RESOLVED)
+        platform.answers["act"] = lambda number, body: CLOSED
 
-    def draft_of(self, message):
-        return next(card for card in message.dooservice_cards if card["type"] == "draft")
+        CardActions(self.env(user=self.ana), platform).act(message.id, "c0", "yes", None, "Yes, close")
 
-    def test_the_draft_is_read_back_and_kept_with_the_answer(self):
-        message = self.answer_for(self.ana, FakePlatform({"ask": DRAFTED, "understand": READ_BACK}))
+        sent = platform.asked[-1][1][1]
+        self.assertEqual((sent["card"], sent["action"], sent["value"], sent["user_login"]), ("c0", "yes", None, "ana"))
+        self.assertEqual(ticket.state, "closed")
+        self.assertEqual(message.dooservice_card_state["c0"]["done"], "yes")
+        messages = self.said(ticket.channel_id, limit=2).sorted("id")
+        self.assertIn("Yes, close", messages[0].body)
+        self.assertEqual((messages[1].message_type, messages[1].dooservice_remote_id), ("notification", 404))
 
-        draft = self.draft_of(message)
-        self.assertEqual((draft["remote_id"], draft["rows"]), (READ_BACK["id"], 1200))
-        self.assertFalse(self.env["dooservice.brain.request"].search([]))
-
-    def test_sending_twice_makes_one_request(self):
-        platform = FakePlatform({"ask": DRAFTED, "understand": READ_BACK, "submit": {**READ_BACK, "state": "queued"}})
-        message = self.answer_for(self.ana, platform)
+    def test_a_piece_answers_once(self):
+        _ticket, platform, message = self.with_card(self.ana, RESOLVED)
         actions = CardActions(self.env(user=self.ana), platform)
 
-        actions.act(message.id, self.draft_of(message)["id"], "send")
-        actions.act(message.id, self.draft_of(message)["id"], "send")
+        actions.act(message.id, "c0", "no")
+        with self.assertRaises(UserError):
+            actions.act(message.id, "c0", "yes")
 
-        sent = self.env["dooservice.brain.request"].search([])
-        self.assertEqual((len(sent), sent.state, sent.message_id), (1, "queued", message))
-        self.assertEqual([name for name, _args in platform.asked].count("submit"), 1)
+        self.assertEqual(platform.names().count("act"), 1)
 
-    def test_cancelling_leaves_nothing(self):
-        platform = FakePlatform({"ask": DRAFTED, "understand": READ_BACK})
-        message = self.answer_for(self.ana, platform)
+    def test_a_closed_ticket_refuses_what_is_written_and_offers_a_new_one(self):
+        ticket, platform, message = self.with_card(self.ana, RESOLVED)
+        platform.answers["act"] = lambda number, body: CLOSED
+        CardActions(self.env(user=self.ana), platform).act(message.id, "c0", "yes")
 
-        CardActions(self.env(user=self.ana), platform).act(message.id, self.draft_of(message)["id"], "cancel")
+        self.say(self.ana, ticket.channel_id, "One more thing")
 
-        self.assertFalse(self.env["dooservice.brain.request"].search([]))
-        self.assertEqual(platform.asked[-1][0], "cancel")
+        answer = self.said(ticket.channel_id)
+        self.assertEqual(answer.author_id, self.bot)
+        self.assertIn("open a new one linked", answer.body)
+        self.assertEqual(answer.dooservice_cards[0]["type"], "continue")
+        self.assertEqual(answer.dooservice_cards[0]["ticket"], ticket.id)
+        self.assertFalse(self.env["mail.message"].search([("dooservice_pending", "=", True)]))
+        self.assertTrue(CardPayload(self.env(user=self.ana)).of([answer.id])[answer.id]["closed"])
 
-    def test_who_may_only_ask_leaves_it_with_an_administrator(self):
-        platform = FakePlatform({"ask": DRAFTED, "understand": READ_BACK})
-        message = self.answer_for(self.eva, platform)
-
-        CardActions(self.env(user=self.eva), platform).act(message.id, self.draft_of(message)["id"], "send")
-
-        asked = self.env["dooservice.brain.request"].search([])
-        self.assertEqual((asked.state, asked.requested_by), ("draft", self.eva))
-        self.assertNotIn("submit", [name for name, _args in platform.asked])
-
-    def test_someone_else_cannot_press_it(self):
-        platform = FakePlatform({"ask": DRAFTED, "understand": READ_BACK})
-        message = self.answer_for(self.ana, platform)
+    def test_only_a_responsible_approves(self):
+        ticket, platform, message = self.with_card(self.eva, APPROVAL, kind="change")
+        ticket.channel_id.sudo().add_members(partner_ids=self.rosa.partner_id.ids, post_joined_message=False)
 
         with self.assertRaises(AccessError):
-            CardActions(self.env(user=self.eva), platform).act(message.id, self.draft_of(message)["id"], "send")
+            CardActions(self.env(user=self.eva), platform).act(message.id, "c0", "approve")
+        CardActions(self.env(user=self.rosa), platform).act(message.id, "c0", "approve", None, "Approve")
 
-    def test_a_chart_counts_only_what_the_person_may_read(self):
-        card = {"type": "chart", "model": "res.partner", "group_by": "is_company"}
-        outsider = new_test_user(self.env, "pia", groups="base.group_portal")
+        self.assertEqual(platform.asked[-1][1][1]["user_login"], "rosa")
+        payload = CardPayload(self.env(user=self.eva)).of([message.id])[message.id]
+        self.assertEqual((payload["can_approve"], payload["state"]["c0"]["done"]), (False, "approve"))
 
-        counted = ChartCounting(self.env(user=self.ana)).count(card)
-        refused = ChartCounting(self.env(user=outsider)).count({**card, "model": "ir.cron", "group_by": "active"})
+    def test_someone_else_cannot_press_it_nor_see_it(self):
+        _ticket, platform, message = self.with_card(self.ana, RESOLVED)
 
-        self.assertTrue(counted["groups"])
-        self.assertEqual(refused, {"denied": "access"})
+        with self.assertRaises(AccessError):
+            CardActions(self.env(user=self.eva), platform).act(message.id, "c0", "yes")
+
+        self.assertEqual(CardPayload(self.env(user=self.eva)).of([message.id]), {})
+
+    def test_a_correction_needs_words(self):
+        _ticket, platform, message = self.with_card(
+            self.ana, {**RESOLVED, "cards": [{"type": "understood"}]}, kind="change"
+        )
+
+        with self.assertRaises(UserError):
+            CardActions(self.env(user=self.ana), platform).act(message.id, "c0", "correct", "")
+        CardActions(self.env(user=self.ana), platform).act(
+            message.id, "c0", "correct", "Only wholesale customers", "Correct"
+        )
+
+        self.assertEqual(platform.asked[-1][1][1]["value"], "Only wholesale customers")
