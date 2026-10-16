@@ -52,12 +52,7 @@ class CardsHtml:
         self.env["bus.bus"]._sendone(channel, "mail.message/insert", {"id": message.id, "body": message.body})
 
     def card(self, card, done, ticket):
-        kind = card.get("type")
-        if kind == "sources":
-            return Markup("<p><small>%s</small></p>") % " · ".join(card.get("items") or [])
-        if kind == "meta":
-            return Markup('<p><small class="text-muted">%s</small></p>') % (card.get("text") or "")
-        lines = self.head(card)
+        kind, lines = card.get("type"), self.head(card)
         if kind == CONTINUE_CARD:
             lines.append(self.continue_link(card))
         elif done.get("done"):
@@ -67,12 +62,14 @@ class CardsHtml:
         return Markup("<p>%s</p>") % Markup("<br/>").join(lines)
 
     def head(self, card):
-        return [shape % (" · ".join(card[key]) if key == "items" else card[key]) for key, shape in HEAD if card.get(key)]
+        said = {key: " · ".join(card[key]) if key == "items" else card[key] for key, _shape in HEAD if card.get(key)}
+        return [shape % said[key] for key, shape in HEAD if key in said]
 
     def options(self, card):
         """What the platform offers for the piece, or what its kind offers by default; typed answers go to the chat."""
         given = [(o["value"], o.get("label") or o["value"], bool(o.get("input"))) for o in card.get("options") or []]
-        return given or [(value, Wording.translated(label, self.lang), False) for value, label in OPTIONS[card["type"]]]
+        defaults = OPTIONS.get(card["type"], ())
+        return given or [(value, Wording.translated(label, self.lang), False) for value, label in defaults]
 
     def links(self, card):
         options = self.options(card)
