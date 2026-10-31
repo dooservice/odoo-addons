@@ -1,3 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ticket_ask,dooservice.ticket ask,model_dooservice_ticket,group_ask,1,0,0,0
-access_ticket_system,dooservice.ticket system,model_dooservice_ticket,base.group_system,1,1,1,1

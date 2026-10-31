@@ -23,10 +23,10 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v5
-      - name: Install and test dooservice_brain
+      - name: Install and test dooservice_connect
         run: >-
           odoo --db_host postgres --db_user odoo --db_password odoo -d test
           --addons-path=/usr/lib/python3/dist-packages/odoo/addons,$GITHUB_WORKSPACE
-          -i dooservice_brain --test-tags /dooservice_brain --stop-after-init --log-level=test
+          -i dooservice_connect --test-tags /dooservice_connect --stop-after-init --log-level=test
           2>&1 | tee test.log;
           grep -q " 0 failed, 0 error(s)" test.log
