@@ -2,6 +2,8 @@
 
 #: The option of odoo.conf with the platform's public key, written there by the agent.
 CONFIG_KEY = "dooservice_connect_key"
+#: The option with this Odoo's environment: every Odoo trusts the same key, so a link names one.
+CONFIG_ENVIRONMENT = "dooservice_environment_id"
 #: How late a link may arrive past its expiry, for a server's clock a little behind.
 LEEWAY_SECONDS = 30
 #: Under the data dir, outside the database: a backup taken elsewhere carries none of it.
